@@ -5,7 +5,6 @@ module.exports = app => {
     router.post("/", comments.create);
     router.get("/", comments.findAll);
     router.post("/byMoodId", comments.findByMoodId);
-    router.get("/:id", comments.findOne);
 
 
     app.use('/api/comments', router);

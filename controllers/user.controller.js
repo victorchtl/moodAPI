@@ -6,6 +6,7 @@ const Op = db.Sequelize.Op;
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const randomColor = require('../assets/RandomColor');
+const Sequelize = require("sequelize");
 
 exports.create = (req, res) => {
     // Validate request
@@ -67,8 +68,15 @@ exports.findAll = (req, res) => {
 
 exports.findOne = (req, res) => {
     User.findOne({
-        where: { id: req.params.id },
-        include: [{model: Mood, include: User}]
+        where: {
+            id: req.params.id
+        },
+        attributes: {
+            include: [
+                [Sequelize.fn('COUNT', Sequelize.col('username')), 'usernameCOUNT']
+            ]
+        },
+        include: [{model: Mood }]
     })
         .then(data => {
             res.send(data);
@@ -100,7 +108,7 @@ exports.findByFollowing = async (req, res) => {
         },
         include: {
             model: Following,
-            where : {
+            where: {
                 userId: req.body.currentUserId
             },
             required: false
@@ -131,7 +139,7 @@ exports.findByFollowers = async (req, res) => {
         },
         include: {
             model: Following,
-            where : {
+            where: {
                 userId: req.body.currentUserId
             },
             required: false
