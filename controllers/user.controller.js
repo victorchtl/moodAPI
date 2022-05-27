@@ -70,13 +70,7 @@ exports.findOne = (req, res) => {
     User.findOne({
         where: {
             id: req.params.id
-        },
-        attributes: {
-            include: [
-                [Sequelize.fn('COUNT', Sequelize.col('username')), 'usernameCOUNT']
-            ]
-        },
-        include: [{model: Mood }]
+        }
     })
         .then(data => {
             res.send(data);
@@ -150,6 +144,17 @@ exports.findByFollowers = async (req, res) => {
     });
     return res.send(users)
 };
+
+exports.update = async (req, res) => {
+    const data = req.body
+    const updatedUser = await User.update(
+        data,
+        {
+          where: { id: req.body.id },
+        }
+      );
+      return res.send(updatedUser)
+}
 
 exports.allAccess = (req, res) => {
     res.status(200).send("Public Content.");
